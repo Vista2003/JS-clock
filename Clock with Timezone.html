@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clock</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-size: 72px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 20%;
+      transition: background-color 0.5s ease;
+    }
+
+    #timezone {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="clock"></div>
+  <div id="date"></div>
+  <div id="timezone"></div>
+
+  <script>
+    function updateTime() {
+      var now = new Date();
+      var clock = document.getElementById('clock');
+      var date = document.getElementById('date');
+      var timezone = document.getElementById('timezone');
+
+      var hours = now.getHours().toString().padStart(2, '0');
+      var minutes = now.getMinutes().toString().padStart(2, '0');
+      var seconds = now.getSeconds().toString().padStart(2, '0');
+      var year = now.getFullYear();
+      var month = (now.getMonth() + 1).toString().padStart(2, '0');
+      var day = now.getDate().toString().padStart(2, '0');
+      var timezoneOffset = now.getTimezoneOffset() / 60;
+
+      clock.innerHTML = hours + ':' + minutes + ':' + seconds;
+      date.innerHTML = year + '-' + month + '-' + day;
+
+      // Check if the current time zone is ahead of or behind UTC
+      var timezoneSign = timezoneOffset >= 0 ? '-' : '+';
+      timezoneOffset = Math.abs(timezoneOffset);
+
+      // Format the time zone string as UTC+/-HH:MM
+      var timezoneHours = Math.floor(timezoneOffset).toString().padStart(2, '0');
+      var timezoneMinutes = Math.floor((timezoneOffset - Math.floor(timezoneOffset)) * 60).toString().padStart(2, '0');
+      var timezoneString = 'UTC' + timezoneSign + timezoneHours + ':' + timezoneMinutes;
+
+      timezone.innerHTML = timezoneString;
+
+      // Check the luminance of the background color and set the text color accordingly
+      var luminance = getLuminance(getComputedStyle(document.body).backgroundColor);
+      if (luminance > 0.5) {
+        clock.style.color = 'black';
+        date.style.color = 'black';
+        timezone.style.color = 'black';
+      } else {
+        clock.style.color = 'white';
+        date.style.color = 'white';
+        timezone.style.color = 'white';
+      }
+    }
+
+    function changeBackgroundColor() {
+      var randomColor = Math.floor(Math.random()*16777215).toString(16);
+      document.body.style.backgroundColor = "#" + randomColor;
+    }
+
+    // Calculate the luminance of a color
+    function getLuminance(color) {
+      var rgb = color.match(/\d+/g);
+      var r = rgb[0];
+      var g = rgb[1];
+      var b = rgb[2];
+      var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance;
+    }
+
+    setInterval(updateTime, 1000);
+    setInterval(changeBackgroundColor, 10000);
+  </script>
+</body>
+</html>
